@@ -54,7 +54,7 @@ function App() {
   useEffect(() => {
     // Connect to Socket.IO server when authenticated
     if (isAuthenticated) {
-      const newSocket = io('http://localhost:5173', {
+      const newSocket = io('https://penrose-test-3.onrender.com', {
         withCredentials: true
       });
 
