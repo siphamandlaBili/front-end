@@ -18,22 +18,26 @@ const navigation = [
   { name: 'Profile', href: '/admin/profile', icon: UserCircleIcon },
 ];
 
-export default function AdminDashboardLayout({ children }) {
+export default function AdminDashboardLayout({ children, setIsAuthenticated, setUserProfile }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
 
   const handleLogout = async () => {
+    setLoading(true);
+    setSidebarOpen(false);
     try {
       await axios.post('/auth/logout');
       localStorage.clear();
       sessionStorage.clear();
-      setTimeout(() => {
-        navigate('/', { replace: true });
-        window.location.reload();
-      }, 1000);
+      if (setIsAuthenticated) setIsAuthenticated(false);
+      if (setUserProfile) setUserProfile(null);
+      navigate('/', { replace: true });
     } catch (error) {
       toast.error('Failed to logout');
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -98,6 +102,7 @@ export default function AdminDashboardLayout({ children }) {
                                       : 'text-gray-700 hover:text-[#fa5c36] hover:bg-gray-50',
                                     'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                   )}
+                                  onClick={() => setSidebarOpen(false)}
                                 >
                                   <item.icon
                                     className={clsx(
@@ -117,11 +122,19 @@ export default function AdminDashboardLayout({ children }) {
                     <button
                       onClick={handleLogout}
                       className="mt-8 w-full flex items-center justify-center gap-2 bg-[#fa5c36] hover:bg-[#e04e2a] text-white font-semibold py-2 rounded-lg transition-colors duration-200 shadow"
+                      disabled={loading}
                     >
-                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
-                      </svg>
-                      Logout
+                      {loading ? (
+                        <svg className="animate-spin h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                          <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                          <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                        </svg>
+                      ) : (
+                        <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
+                        </svg>
+                      )}
+                      {loading ? 'Logging out...' : 'Logout'}
                     </button>
                   </nav>
                 </div>

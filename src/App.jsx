@@ -134,7 +134,7 @@ function App() {
             path="/admin" 
             element={
               isAuthenticated && userProfile?.isAdmin ? (
-                <AdminDashboard userProfile={userProfile} />
+                <AdminDashboard userProfile={userProfile} setIsAuthenticated={setIsAuthenticated} setUserProfile={setUserProfile} />
               ) : isAuthenticated && !userProfile?.isAdmin ? (
                 <Navigate to="/dashboard" replace />
               ) : (
