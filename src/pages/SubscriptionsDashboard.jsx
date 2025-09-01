@@ -18,6 +18,7 @@ export default function SubscriptionsDashboard() {
   const [subscriptions, setSubscriptions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedStatus, setSelectedStatus] = useState('active');
+  const [cancellingId, setCancellingId] = useState(null);
 
   useEffect(() => {
     fetchSubscriptions();
@@ -57,11 +58,15 @@ export default function SubscriptionsDashboard() {
   };
 
   const handleUnsubscribe = async (subscriptionId) => {
+    setCancellingId(subscriptionId);
     try {
       await axios.delete(`/subscriptions/${subscriptionId}`);
-      fetchSubscriptions();
+      await fetchSubscriptions();
+      toast.success('Subscription cancelled');
     } catch (error) {
       toast.error('Failed to cancel subscription');
+    } finally {
+      setCancellingId(null);
     }
   };
 
@@ -177,9 +182,23 @@ export default function SubscriptionsDashboard() {
                           <span className="mr-4 text-sm font-medium text-green-600">Active</span>
                           <button
                             onClick={() => handleUnsubscribe(subscription._id)}
-                            className="inline-flex items-center rounded-md bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 shadow-sm hover:bg-red-100"
+                            className={clsx(
+                              "inline-flex items-center rounded-md bg-red-50 px-3 py-2 text-sm font-semibold text-red-700 shadow-sm hover:bg-red-100",
+                              cancellingId === subscription._id && "opacity-60 cursor-not-allowed"
+                            )}
+                            disabled={cancellingId === subscription._id}
                           >
-                            Cancel
+                            {cancellingId === subscription._id ? (
+                              <>
+                                <svg className="animate-spin h-4 w-4 mr-2 text-red-700" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v4a4 4 0 00-4 4H4z"></path>
+                                </svg>
+                                Cancelling...
+                              </>
+                            ) : (
+                              "Cancel"
+                            )}
                           </button>
                         </>
                       ) : (
