@@ -61,7 +61,10 @@ export default function SubscriptionsDashboard() {
     setCancellingId(subscriptionId);
     try {
       await axios.delete(`/subscriptions/${subscriptionId}`);
-      await fetchSubscriptions();
+      // Optimistically update state
+      setSubscriptions(prev => prev.map(sub =>
+        sub._id === subscriptionId ? { ...sub, status: 'cancelled' } : sub
+      ));
       toast.success('Subscription cancelled');
     } catch (error) {
       toast.error('Failed to cancel subscription');
