@@ -273,7 +273,7 @@ export default function AdminOverview() {
 
       {/* Add Service Modal */}
       {showAddService && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#6c6c6c78] blur-lg">
           <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
             <button
               className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"

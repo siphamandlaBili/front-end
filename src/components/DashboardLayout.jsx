@@ -90,6 +90,7 @@ export default function DashboardLayout({ children }) {
                                         : 'text-gray-700 hover:text-[#fa5c36] hover:bg-gray-50',
                                       'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
                                     )}
+                                    onClick={() => setSidebarOpen(false)}
                                   >
                                     <item.icon
                                       className={clsx(
@@ -106,7 +107,7 @@ export default function DashboardLayout({ children }) {
                           </li>
                         </ul>
                       </div>
-                      {/* <button
+                      <button
                         onClick={handleLogout}
                         className="mt-8 w-full flex items-center justify-center gap-2 bg-[#fa5c36] hover:bg-[#e04e2a] text-white font-semibold py-2 rounded-lg transition-colors duration-200 shadow"
                       >
@@ -114,7 +115,7 @@ export default function DashboardLayout({ children }) {
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a2 2 0 01-2 2H7a2 2 0 01-2-2V7a2 2 0 012-2h4a2 2 0 012 2v1" />
                         </svg>
                         Logout
-                      </button> */}
+                      </button>
                     </nav>
                   </div>
                 </Dialog.Panel>
