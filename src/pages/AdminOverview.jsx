@@ -47,7 +47,7 @@ export default function AdminOverview() {
     fetchStats();
     
     // Socket.IO for real-time updates
-    const socket = io('https://penrose-test-3.onrender.com', { withCredentials: true });
+  const socket = io('https://penrose-test-3.onrender.com', { withCredentials: true });
     
     if (isRealTime) {
       socket.on('admin:statsUpdate', (data) => {
