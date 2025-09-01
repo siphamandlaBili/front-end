@@ -15,6 +15,7 @@ export default function ServicesDashboard() {
   const [loading, setLoading] = useState(true);
   const [selectedCategory, setSelectedCategory] = useState('All');
   const [billingModal, setBillingModal] = useState(null);
+  const [subscribingId, setSubscribingId] = useState(null);
 
   useEffect(() => {
     fetchData();
@@ -45,6 +46,7 @@ export default function ServicesDashboard() {
   };
 
   const handleSubscribe = async (serviceId) => {
+    setSubscribingId(serviceId);
     try {
       const res = await axios.post('/subscriptions', { serviceId });
       if (res.data.billing) {
@@ -62,6 +64,8 @@ export default function ServicesDashboard() {
       fetchData();
     } catch (error) {
       toast.error(error.response?.data?.message || 'Failed to subscribe');
+    } finally {
+      setSubscribingId(null);
     }
   };
 
@@ -162,15 +166,23 @@ export default function ServicesDashboard() {
             <div className="flex items-center justify-between border-t border-gray-200 bg-gray-50 px-6 py-3">
               <button
                 onClick={() => handleSubscribe(service._id)}
-                disabled={isSubscribed(service._id)}
+                disabled={isSubscribed(service._id) || subscribingId === service._id}
                 className={clsx(
-                  'w-full rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2',
+                  'w-full rounded-md px-3 py-2 text-sm font-semibold shadow-sm focus-visible:outline-2 focus-visible:outline-offset-2 flex items-center justify-center',
                   isSubscribed(service._id)
                     ? 'bg-green-100 text-green-800 cursor-default'
                     : 'bg-[#fa5c36] text-white hover:bg-orange-500 focus-visible:outline-[#fa5c36]'
                 )}
               >
-                {isSubscribed(service._id) ? 'Subscribed' : 'Subscribe Now'}
+                {subscribingId === service._id ? (
+                  <>
+                    <svg className="animate-spin h-4 w-4 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                      <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
+                    </svg>
+                    Subscribing...
+                  </>
+                ) : isSubscribed(service._id) ? 'Subscribed' : 'Subscribe Now'}
               </button>
             </div>
           </div>
