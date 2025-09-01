@@ -20,7 +20,7 @@ const navigation = [
   { name: 'Profile', href: '/dashboard/profile', icon: UserCircleIcon },
 ];
 
-export default function DashboardLayout({ children }) {
+export default function DashboardLayout({ children, setIsAuthenticated, setUserProfile }) {
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
@@ -28,12 +28,12 @@ export default function DashboardLayout({ children }) {
   const handleLogout = async () => {
     try {
       await axios.post('/auth/logout');
-      // Remove token and clear storage before routing
       localStorage.removeItem('token');
       sessionStorage.clear();
       localStorage.clear();
+      if (setIsAuthenticated) setIsAuthenticated(false);
+      if (setUserProfile) setUserProfile(null);
       navigate('/', { replace: true });
-      window.location.reload();
     } catch (error) {
       toast.error('Failed to logout');
     }
