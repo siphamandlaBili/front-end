@@ -115,20 +115,9 @@ export default function AdminOverview() {
           </div>
           <button
             onClick={() => setShowAddService(true)}
-            className="bg-[#fa5c36] text-white px-5 py-2 rounded-lg shadow hover:bg-[#e04e2a] transition-colors font-semibold mt-4 md:mt-0 flex items-center justify-center"
-            disabled={addServiceLoading}
+            className="bg-[#fa5c36] text-white px-5 py-2 rounded-lg shadow hover:bg-[#e04e2a] transition-colors font-semibold mt-4 md:mt-0"
           >
-            {addServiceLoading ? (
-              <>
-                <svg className="animate-spin h-4 w-4 mr-2 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8v8z"></path>
-                </svg>
-                Adding service...
-              </>
-            ) : (
-              '+ Add Service'
-            )}
+            + Add Service
           </button>
         </div>
         {/* Stats Summary */}
@@ -284,7 +273,7 @@ export default function AdminOverview() {
 
       {/* Add Service Modal */}
       {showAddService && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-[#6c6c6c78] blur-lg">
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-40">
           <div className="bg-white rounded-lg shadow-lg p-8 w-full max-w-md relative">
             <button
               className="absolute top-2 right-2 text-gray-400 hover:text-gray-600"
