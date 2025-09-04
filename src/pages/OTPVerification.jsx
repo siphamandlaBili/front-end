@@ -47,6 +47,7 @@ export default function OTPVerification({ setIsAuthenticated }) {
       setIsAuthenticated(true);
       // Fetch user profile to check if admin
       const { data: profile } = await axios.get('/user/profile');
+      await new Promise(res => setTimeout(res, 500)); // Wait 500ms for state to settle
       if (profile.isAdmin) {
         window.location.replace('/admin');
       } else {
