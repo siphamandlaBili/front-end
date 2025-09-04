@@ -22,31 +22,40 @@ import AdminProfile from './pages/AdminProfile';
 // Set up axios defaults
 axios.defaults.baseURL = 'https://penrose-test-3.onrender.com/api';
 axios.defaults.withCredentials = true;
+// Don’t let a cold-starting server block the UI for too long
+axios.defaults.timeout = 10000; // 10s
 
 function App() {
   // ...existing code...
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [socket, setSocket] = useState(null);
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  // Non-blocking auth check; we won’t gate UI on this anymore
+  const [checkingAuth, setCheckingAuth] = useState(false);
   const [userProfile, setUserProfile] = useState(null);
   const navigate = useNavigate();
 
-  // Check auth on mount
+  // Check auth on mount (non-blocking)
   useEffect(() => {
+    let cancelled = false;
     const checkAuth = async () => {
       try {
         const { data: profile } = await axios.get('/user/profile');
-        setIsAuthenticated(true);
-        setUserProfile(profile);
-        console.log('Frontend /user/profile response:', profile);
+        if (!cancelled) {
+          setIsAuthenticated(true);
+          setUserProfile(profile);
+          console.log('Frontend /user/profile response:', profile);
+        }
       } catch {
-        setIsAuthenticated(false);
-        setUserProfile(null);
-      } finally {
-        setCheckingAuth(false);
+        if (!cancelled) {
+          setIsAuthenticated(false);
+          setUserProfile(null);
+        }
       }
     };
     checkAuth();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
   // Removed automatic redirect effect to allow free navigation after login
@@ -68,13 +77,7 @@ function App() {
     }
   }, [isAuthenticated]);
 
-  if (checkingAuth) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-100">
-        <div className="text-lg text-gray-500">Loading...</div>
-      </div>
-    );
-  }
+  // Don’t block rendering while checking auth; routes will update when auth resolves
 
   return (
     <>
