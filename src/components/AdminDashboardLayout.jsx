@@ -27,15 +27,16 @@ export default function AdminDashboardLayout({ children, setIsAuthenticated, set
   const handleLogout = async () => {
     setLoading(true);
     setSidebarOpen(false);
+    // Clear auth state and storage immediately
+    if (setIsAuthenticated) setIsAuthenticated(false);
+    if (setUserProfile) setUserProfile(null);
+    localStorage.clear();
+    sessionStorage.clear();
+    navigate('/', { replace: true });
     try {
       await axios.post('/auth/logout');
-      localStorage.clear();
-      sessionStorage.clear();
-      if (setIsAuthenticated) setIsAuthenticated(false);
-      if (setUserProfile) setUserProfile(null);
-      navigate('/', { replace: true });
     } catch (error) {
-      toast.error('Failed to logout');
+      toast.error('Failed to logout from server, but you are logged out locally.');
     } finally {
       setLoading(false);
     }

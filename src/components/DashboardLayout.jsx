@@ -26,16 +26,17 @@ export default function DashboardLayout({ children, setIsAuthenticated, setUserP
   const navigate = useNavigate();
 
   const handleLogout = async () => {
+    // Clear auth state and storage immediately
+    if (setIsAuthenticated) setIsAuthenticated(false);
+    if (setUserProfile) setUserProfile(null);
+    localStorage.removeItem('token');
+    sessionStorage.clear();
+    localStorage.clear();
+    navigate('/', { replace: true });
     try {
       await axios.post('/auth/logout');
-      localStorage.removeItem('token');
-      sessionStorage.clear();
-      localStorage.clear();
-      if (setIsAuthenticated) setIsAuthenticated(false);
-      if (setUserProfile) setUserProfile(null);
-      navigate('/', { replace: true });
     } catch (error) {
-      toast.error('Failed to logout');
+      toast.error('Failed to logout from server, but you are logged out locally.');
     }
   };
 

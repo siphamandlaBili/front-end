@@ -89,11 +89,10 @@ function App() {
             element={
               !isAuthenticated ? (
                 <Login setIsAuthenticated={setIsAuthenticated} setUserProfile={setUserProfile} />
+              ) : userProfile?.isAdmin ? (
+                <Navigate to="/admin" replace />
               ) : (
-                <div className="flex flex-col items-center justify-center min-h-screen">
-                  <h1 className="text-3xl font-bold mb-4 text-[#fa5c36]">Welcome!</h1>
-                  <p className="mb-4 text-gray-700">You are logged in. Use the navigation to access your dashboard or other pages.</p>
-                </div>
+                <Navigate to="/dashboard" replace />
               )
             }
           />
